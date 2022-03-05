@@ -7,13 +7,14 @@ const mongoose = require("mongoose");
 
 const loginRouter = require("./Routers/loginRouter");
 const userRouter = require("./Routers/userRouter");
+const messageRouter = require("./Routers/messageRouter");
 
 const middleWare = require("./utils/middleware");
 
 app.use(express.json());
 app.use(middleWare.logger);
 
-app.use("/api/signup", userRouter);
+app.use("/api/users", userRouter);
 app.use("/api/login", loginRouter);
 
 app.use(middleWare.unknownEndpoint);

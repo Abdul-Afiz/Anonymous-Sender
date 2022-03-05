@@ -14,27 +14,25 @@ loginRouter.get("/", async (req, res) => {
 loginRouter.post("/", async (req, res) => {
   const body = req.body;
 
-  const email = await User.findOne({ email: body.email });
+  const user = await User.findOne({ email: body.email });
   const password =
-    email === null
+    user === null
       ? false
-      : await bcrypt.compare(body.password, email.passwordHash);
+      : await bcrypt.compare(body.password, user.passwordHash);
 
-  console.log({ email: email, password });
+  console.log({ user, password });
 
-  if (!(email && password)) {
+  if (!(user && password)) {
     return res.status(401).json({ error: "invalid email or password" });
   }
 
-  const Emailtoken = { id: email._id };
+  const userToken = { id: email._id, email: email };
 
-  const token = jwt.sign(Emailtoken, process.env.Secret, {
+  const token = jwt.sign(userToken, process.env.Secret, {
     expiresIn: 60 * 60,
   });
 
-  console.log({ token });
-
-  res.status(201).send({ token, id: email._id });
+  res.status(201).send({ token, id: user._id });
 });
 
 module.exports = loginRouter;
